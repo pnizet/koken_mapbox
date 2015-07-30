@@ -20,4 +20,4 @@ Configuration of the map
 
 That's all !
 
-If you would like to see it in action you can go to his page : http://pierre-nizet.fr/map/
+If you would like to see it in action you can go to his page : http://pierre-nizet.fr/carte/
