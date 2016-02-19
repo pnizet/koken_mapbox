@@ -130,10 +130,11 @@ function median(values) {
 </koken:load>
 
 
-// NEW SCHOOL
+// Using clusters
 var markers = L.markerClusterGroup(
 	{
-	// UNCOMMENT to get a custom icon for a group  (be carefull : not work for group over 100 elements)
+	// UNCOMMENT to get a custom icon for a group, here, it's the same as child (ie a camera)  
+	//(be carefull : not work for group over 100 elements)
      /* iconCreateFunction: function(cluster) {
         return L.mapbox.marker.icon({
         // show the number of markers in the cluster on the icon.
@@ -158,7 +159,7 @@ var markers = L.markerClusterGroup(
 	);
 
 
-//boucle pour  la position  mediane de la carte
+//loop to populate the median
 for(var idx in points) {
 	// Only for non empty coordinates
 	if((points[idx].cLng != 0) && (points[idx].cLat != 0)) {		
@@ -169,7 +170,7 @@ for(var idx in points) {
 	
 var map = L.mapbox.map('map_full', 'testadaz.ikef6ib2', {'minZoom':'3', 'maxZoom':'15'}).setView([median(LatA), median(LngA)], 6);;
 
-// boucle pour positionner les marker en cluster
+// loop to populate marker in clusters
 for(var idx in points) {
 	// Only for non empty coordinates
 	if((points[idx].cLng != 0) && (points[idx].cLat != 0)) {
@@ -191,68 +192,6 @@ for(var idx in points) {
 map.addLayer(markers);
 
 
-
-
-//var markers = L.mapbox.featureLayer()
-//				.setGeoJSON(useablemarkers)
-//				.addTo(map);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-
-// JS Loop thru markers datas to create markers on map
-for(var idx in points) {
-	// Only for non empty coordinates
-	if((points[idx].cLng != 0) && (points[idx].cLat != 0)) {
-		useablemarkers.push({
-			"type": "Feature",
-				"geometry": {
-					"type": "Point",
-					"coordinates": [
-					  points[idx].cLng,
-					  points[idx].cLat
-					]
-				},
-				"properties": {
-					"title" : points[idx].title+"<br/> <img src=\""+points[idx].image+"\" /> <br/> <a href=\""+points[idx].url+"\">See the picture</a>",
-					"marker-size": "large",
-					"marker-color": "#CC0001",
-					"marker-symbol": "camera"
-				}
-			});
-		LngA.push(points[idx].cLng);
-		LatA.push(points[idx].cLat);
-	}
-}
-
-	
-// Create a map centred on the median coordinate of all the previous markers
-var map = L.mapbox.map('map_full', 'testadaz.ikef6ib2', {'minZoom':'3', 'maxZoom':'15'}).setView([median(LatA), median(LngA)], 6);
-
-var markers = L.mapbox.featureLayer()
-				.setGeoJSON(useablemarkers)
-				.addTo(map);
-
-*/
 			
 // Fits map to markers, uncomment this block if you prefer to see all your markers on the map, it will unzoom in order to fit all the marker in the map
 //map.on('ready', function() {
