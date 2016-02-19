@@ -1,16 +1,15 @@
 koken_mapbox
 ============
-Hello all,
-I would like to share with you a customization that I've done on my koken installation and that lots of you would like to have (I'm prety sure of it).
-A map with all your pictures on it.
-I choose to use OpenStreetMap, an open project rather than google maps and it's closed environment by faith, and because their maps are nicer. 
 
-First of all I would like to precise that web dev is not my job, i've done this with my little knowledge of web dev and I'm pretty sure that there is a lot of improvement that can be done. But it works, if you have suggestions, I will be pleased to read them.
+A "kind of" plugin for koken CMS which integrate Mapbox map and groups markers in clusters
 
-So here is the method :
-- First create an account on MapBox.com (it's free, if you'are not displaying more than 3000 maps/month), Create a project, it will give you a "Map ID"
-- Download the called map.lens
-- Replace in the code YOUR_MAP by your "Map ID"
+
+First of all I would like to precise that web dev is not my job, i've done this with my very little knowledge of web dev and I'm pretty sure that there is a lot of improvement that can be done. But it works, if you have suggestions, I will be pleased to read them.
+
+So here is the method to use it:
+- First create an account on MapBox.com (it's free, if you are not displaying more than 3000 maps/month), Create a project, it will give you a "Map ID"
+- Download the file called map.lens
+- Replace in the code YOUR_MAP (line 171) by your "Map ID"
 - Save the file / Upload the file to /storage/theme/your_theme/
 
 Configuration of the map

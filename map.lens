@@ -168,7 +168,7 @@ for(var idx in points) {
 	}
 }
 	
-var map = L.mapbox.map('map_full', 'testadaz.ikef6ib2', {'minZoom':'3', 'maxZoom':'15'}).setView([median(LatA), median(LngA)], 6);;
+var map = L.mapbox.map('map_full', 'YOUR_MAP', {'minZoom':'3', 'maxZoom':'15'}).setView([median(LatA), median(LngA)], 6);;
 
 // loop to populate marker in clusters
 for(var idx in points) {
