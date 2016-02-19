@@ -23,7 +23,76 @@
 		<script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.3/mapbox.js'></script>
 		<link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.3/mapbox.css' rel='stylesheet' />
 		<style type="text/css">
-		#map_full { top:0; bottom:0; width:100%; height: 900px; margin-top: -5px;}
+		#map_full { top:0; bottom:0; width:100%; height: 950px; margin-top: -5px;}
+		</style>
+		
+		<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
+		<style type="text/css">
+				.marker-cluster-small div {
+				background-image:url(http://a.tiles.mapbox.com/v3/marker/pin-s+CC3A00.png);
+				background-repeat:no-repeat;
+				padding-right:10px
+				}
+
+				.marker-cluster-medium div {
+				background-image:url(http://a.tiles.mapbox.com/v3/marker/pin-m+CC0001.png)
+				}
+
+				.marker-cluster-large div {
+				background-image:url(http://a.tiles.mapbox.com/v3/marker/pin-l+CC0001.png)
+				}
+
+				.leaflet-oldie .marker-cluster-small {
+				background-color:#b5e28c
+				}
+
+				.leaflet-oldie .marker-cluster-small div {
+				background-color:#6ecc39
+				}
+
+				.leaflet-oldie .marker-cluster-medium {
+				background-color:#f1d357
+				}
+
+				.leaflet-oldie .marker-cluster-medium div {
+				background-color:#f0c20c
+				}
+
+				.leaflet-oldie .marker-cluster-large {
+				background-color:#fd9c73
+				}
+
+				.leaflet-oldie .marker-cluster-large div {
+				background-color:#f18017
+				}
+
+				.marker-cluster {
+				background-clip:padding-box;
+				border-radius:20px
+				}
+
+				.marker-cluster div {
+				width:30px;
+				height:50px;
+				margin-left:5px;
+				margin-top:5px;
+				text-align:center;
+				color:#fff;
+				font-family:raleway;
+				font-weight:600
+				}
+
+				.marker-cluster-medium span {
+				line-height:28px
+				}
+
+				.marker-cluster-large span {
+				line-height:37px
+				}
+				
+				.leaflet-popup-content {
+					width: 120px
+				}
 		</style>
 	</koken:head>
 </koken:load>
@@ -48,51 +117,143 @@ function median(values) {
 }
 
 //koken loop to populate markers datas
-<koken:load limit="100" source="contents">
+<koken:load source="contents">
     <koken:loop>
-    points.push({
-        cLng:   {{ geolocation.longitude }} +0, // hack to add empty coordinate
-        cLat:   {{ geolocation.latitude }} +0,
-        title:  "{{ content.title }}",
-        url:    "{{ content.url }}",
-		image:  "{{ content.presets.small.url }}"
-	});
+		points.push({
+			cLng:   {{ geolocation.longitude }} +0, // hack to add empty coordinate
+			cLat:   {{ geolocation.latitude }} +0,
+			title:  "{{ content.title }}",
+			url:    "{{ content.url }}",
+			image:  "{{ content.presets.small.url }}"
+		});				
     </koken:loop>
 </koken:load>
 
-// JS Loop thru markers datas to create markers on map
-    for(var idx in points) {
-        // Only for non empty coordinates
-        if((points[idx].cLng != 0) && (points[idx].cLat != 0)) {
-			useablemarkers.push({
-				"type": "Feature",
-					"geometry": {
-						"type": "Point",
-						"coordinates": [
-						  points[idx].cLng,
-						  points[idx].cLat
-						]
-					},
-					"properties": {
-						"title" : points[idx].title+"<br/> <img src=\""+points[idx].image+"\" /> <br/> <a href=\""+points[idx].url+"\">See the picture</a>",
-						"marker-size": "large",
+
+// NEW SCHOOL
+var markers = L.markerClusterGroup(
+	{
+	// UNCOMMENT to get a custom icon for a group  (be carefull : not work for group over 100 elements)
+     /* iconCreateFunction: function(cluster) {
+        return L.mapbox.marker.icon({
+        // show the number of markers in the cluster on the icon.
+		'marker-symbol': cluster.getChildCount(),
+		"marker-size": "large",
+		"marker-color": "#CC0001",		
+        });
+      }
+    ,*/
+	// custom polygon appearance
+	polygonOptions: {
+        fillColor: '#FF3D3D',
+        color: '#FF3D3D',
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.5
+      },
+	 //disableClusteringAtZoom : 10,
+	 maxClusterRadius : 50,
+	 spiderfyOnMaxZoom : true
+	}
+	);
+
+
+//boucle pour  la position  mediane de la carte
+for(var idx in points) {
+	// Only for non empty coordinates
+	if((points[idx].cLng != 0) && (points[idx].cLat != 0)) {		
+		LngA.push(points[idx].cLng);
+		LatA.push(points[idx].cLat);
+	}
+}
+	
+var map = L.mapbox.map('map_full', 'testadaz.ikef6ib2', {'minZoom':'3', 'maxZoom':'15'}).setView([median(LatA), median(LngA)], 6);;
+
+// boucle pour positionner les marker en cluster
+for(var idx in points) {
+	// Only for non empty coordinates
+	if((points[idx].cLng != 0) && (points[idx].cLat != 0)) {
+		var title = points[idx].title+"<br/> <img src=\""+points[idx].image+"\" /> <br/> <a href=\""+points[idx].url+"\">See the picture</a>";
+		var marker = L.marker(new L.LatLng(points[idx].cLat,points[idx].cLng), 
+					{ 
+						icon: L.mapbox.marker.icon({
+						"title" : "<div>"+points[idx].title+"<br/> <img src=\""+points[idx].image+"\" /> <br/> <a href=\""+points[idx].url+"\">See the picture</a></div>",
+						"marker-size": "medium",
 						"marker-color": "#CC0001",
 						"marker-symbol": "camera"
-					}
-				});
-			LngA.push(points[idx].cLng);
-			LatA.push(points[idx].cLat);
-		}
+						})
+					});
+		marker.bindPopup(title);
+		markers.addLayer(marker);
 	}
+}
+	
+map.addLayer(markers);
+
+
+
+
+//var markers = L.mapbox.featureLayer()
+//				.setGeoJSON(useablemarkers)
+//				.addTo(map);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+
+// JS Loop thru markers datas to create markers on map
+for(var idx in points) {
+	// Only for non empty coordinates
+	if((points[idx].cLng != 0) && (points[idx].cLat != 0)) {
+		useablemarkers.push({
+			"type": "Feature",
+				"geometry": {
+					"type": "Point",
+					"coordinates": [
+					  points[idx].cLng,
+					  points[idx].cLat
+					]
+				},
+				"properties": {
+					"title" : points[idx].title+"<br/> <img src=\""+points[idx].image+"\" /> <br/> <a href=\""+points[idx].url+"\">See the picture</a>",
+					"marker-size": "large",
+					"marker-color": "#CC0001",
+					"marker-symbol": "camera"
+				}
+			});
+		LngA.push(points[idx].cLng);
+		LatA.push(points[idx].cLat);
+	}
+}
 
 	
 // Create a map centred on the median coordinate of all the previous markers
-var map = L.mapbox.map('map_full', 'YOUR_MAP', {'minZoom':'3', 'maxZoom':'15'}).setView([median(LatA), median(LngA)], 6);
+var map = L.mapbox.map('map_full', 'testadaz.ikef6ib2', {'minZoom':'3', 'maxZoom':'15'}).setView([median(LatA), median(LngA)], 6);
 
 var markers = L.mapbox.featureLayer()
 				.setGeoJSON(useablemarkers)
 				.addTo(map);
-	
+
+*/
+			
 // Fits map to markers, uncomment this block if you prefer to see all your markers on the map, it will unzoom in order to fit all the marker in the map
 //map.on('ready', function() {
 //    map.fitBounds(markers.getBounds());
