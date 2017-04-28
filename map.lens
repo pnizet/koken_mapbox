@@ -4,12 +4,12 @@
 	<koken:head>
 		<meta property="og:site_name" content="{{ site.title }}" />
 		<meta property="og:title" content="{{ labels.content.plural }}" />
-		<meta property="og:description" content="{{ site.description strip_html='true' }}" />
 		<meta property="og:type" content="website" />
 		<koken:first>
 		<meta property="og:image" content="{{ content.presets.medium_large.url }}" />
 		<meta property="og:image:width" content="{{ content.presets.medium_large.width }}" />
 		<meta property="og:image:height" content="{{ content.presets.medium_large.height }}" />
+		<meta property="og:description" content="{{ site.description strip_html='true' }}" />
 		</koken:first>
 		<meta property="og:url" content="{{ location.site_url }}{{ location.here }}" />
 		<koken:not empty="profile.twitter">
@@ -20,10 +20,17 @@
 		<meta name="twitter:image{{ index }}" content="{{ content.presets.medium_large.cropped.url }}">
 		</koken:loop>
 		</koken:not>
-		<script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.3/mapbox.js'></script>
-		<link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.3/mapbox.css' rel='stylesheet' />
+		<script src='https://api.tiles.mapbox.com/mapbox.js/v2.2.3/mapbox.js'></script>
+		<link href='https://api.tiles.mapbox.com/mapbox.js/v2.2.3/mapbox.css' rel='stylesheet' />
 		<style type="text/css">
-		#map_full { top:0; bottom:0; width:100%; height: 950px; margin-top: -5px;}
+		#map_full { top:0; bottom:0; width:100%; height: 450px; margin-top: -5px;}
+		@media screen and (min-width: 766px) {
+			#map_full {
+			display: inline-block;
+			height: 1000px;
+			width: 100%;
+			}
+		}
 		</style>
 		
 		<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
@@ -97,6 +104,28 @@
 	</koken:head>
 </koken:load>
 
+<script type="text/javascript">
+$(document).ready(function(){   
+    //Check if the current URL contains '#'
+    if(document.URL.indexOf("#")==-1){
+        // Set the URL to whatever it was plus "#".
+        url = document.URL+"#";
+        location = "#";
+
+        //Reload the page
+        location.reload(true);
+    }
+});
+
+function getParamValue(param,url)
+{
+	var u = url == undefined ? document.location.href : url;
+	var reg = new RegExp('(\\?|&|^)'+param+'=(.*?)(&|$)');
+	matches = u.match(reg);
+	return matches[2] != undefined ? decodeURIComponent(matches[2]).replace(/\+/g,' ').replace('#', '') : '';
+}
+
+</script>
 <div id='map_full'></div>
 
 <script>
@@ -129,6 +158,31 @@ function median(values) {
     </koken:loop>
 </koken:load>
 
+// Mapbox spiders
+L.MarkerClusterGroup.include({
+    _zoomOrSpiderfy: function (e) {
+        var map = this._map;
+        // The following first condition is the part that is missing in the
+        // current plugin release, and which triggers a spiderfy if all
+        // contained markers are still clustered at maximum zoom.
+        if (e.layer._bounds._northEast.equals(e.layer._bounds._southWest)) {
+            if (this.options.spiderfyOnMaxZoom) {
+                e.layer.spiderfy();
+            }
+        } else if (map.getMaxZoom() === map.getZoom()) {
+            if (this.options.spiderfyOnMaxZoom) {
+                e.layer.spiderfy();
+            }
+        } else if (this.options.zoomToBoundsOnClick) {
+            e.layer.zoomToBounds();
+        }
+
+        // Focus the map again for keyboard users.
+        if (e.originalEvent && e.originalEvent.keyCode === 13) {
+            map._container.focus();
+        }
+    }
+});
 
 // Using clusters
 var markers = L.markerClusterGroup(
@@ -168,8 +222,21 @@ for(var idx in points) {
 	}
 }
 	
+// Is there coordinates in URL from content.lens 
+if (document.URL.indexOf("qlong")>0)
+{
+	var lat = getParamValue('qlat');
+	var long = getParamValue('qlong');
+	var z = 14;
+}
+else
+{
+	var lat = median(LatA);
+	var long = median(LngA);
+	var z = 3;
+}
+	
 var map = L.mapbox.map('map_full', 'YOUR_MAP', {'minZoom':'3', 'maxZoom':'15'}).setView([median(LatA), median(LngA)], 6);;
-
 // loop to populate marker in clusters
 for(var idx in points) {
 	// Only for non empty coordinates
