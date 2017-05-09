@@ -1,0 +1,19 @@
+{
+<koken:load source="contents" limit="30" infinte="true" filter:page="{{ location.parameters.page }}">
+    "images": [
+        <koken:loop separator=",">
+            {
+                "cLng":   "{{ geolocation.longitude }}+0",
+                "cLat":   "{{ geolocation.latitude }}+0",
+                "title":  "{{ content.title }}",
+                "url":    "{{ content.url }}lightbox/",
+                "image":  "{{ content.presets.medium.url }}",
+                "small":  "{{ content.presets.small.url }}"
+            }
+        </koken:loop>
+    ],
+    <koken:pagination>
+        "next": "{{ next_page.link }}"
+    </koken:pagination>
+</koken:load>
+}

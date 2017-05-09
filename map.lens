@@ -1,139 +1,128 @@
 <koken:include file="inc/header.html" />
 
 <koken:load limit="4">
-	<koken:head>
-		<meta property="og:site_name" content="{{ site.title }}" />
-		<meta property="og:title" content="{{ labels.content.plural }}" />
-		<meta property="og:type" content="website" />
-		<koken:first>
-		<meta property="og:image" content="{{ content.presets.medium_large.url }}" />
-		<meta property="og:image:width" content="{{ content.presets.medium_large.width }}" />
-		<meta property="og:image:height" content="{{ content.presets.medium_large.height }}" />
-		<meta property="og:description" content="{{ site.description strip_html='true' }}" />
-		</koken:first>
-		<meta property="og:url" content="{{ location.site_url }}{{ location.here }}" />
-		<koken:not empty="profile.twitter">
-		<meta name="twitter:card" content="gallery" />
-		<meta name="twitter:site" content="@{{ profile.twitter }}" />
-		<meta name="twitter:creator" content="@{{ profile.twitter }}" />
-		<koken:loop>
-		<meta name="twitter:image{{ index }}" content="{{ content.presets.medium_large.cropped.url }}">
-		</koken:loop>
-		</koken:not>
-		<script src='https://api.tiles.mapbox.com/mapbox.js/v2.2.3/mapbox.js'></script>
-		<link href='https://api.tiles.mapbox.com/mapbox.js/v2.2.3/mapbox.css' rel='stylesheet' />
-		<style type="text/css">
-		#map_full { top:0; bottom:0; width:100%; height: 450px; margin-top: -5px;}
-		@media screen and (min-width: 766px) {
-			#map_full {
-			display: inline-block;
-			height: 1000px;
-			width: 100%;
-			}
-		}
-		</style>
-		
-		<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
-		<style type="text/css">
-				.marker-cluster-small div {
-				background-image:url(http://a.tiles.mapbox.com/v3/marker/pin-s+CC3A00.png);
-				background-repeat:no-repeat;
-				padding-right:10px
-				}
+    <koken:head>
+        <meta property="og:site_name" content="{{ site.title }}" />
+        <meta property="og:title" content="{{ labels.content.plural }}" />
+        <meta property="og:description" content="{{ site.description strip_html='true' }}" />
+        <meta property="og:type" content="website" />
+        <koken:first>
+        <meta property="og:image" content="{{ content.presets.medium_large.url }}" />
+        <meta property="og:image:width" content="{{ content.presets.medium_large.width }}" />
+        <meta property="og:image:height" content="{{ content.presets.medium_large.height }}" />
+        </koken:first>
+        <meta property="og:url" content="{{ location.site_url }}{{ location.here }}" />
+        <koken:not empty="profile.twitter">
+        <meta name="twitter:card" content="gallery" />
+        <meta name="twitter:site" content="@{{ profile.twitter }}" />
+        <meta name="twitter:creator" content="@{{ profile.twitter }}" />
+        <koken:loop>
+        <meta name="twitter:image{{ index }}" content="{{ content.presets.medium_large.cropped.url }}">
+        </koken:loop>
+        </koken:not>
+        <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+        <script src='https://api.mapbox.com/mapbox.js/v3.1.0/mapbox.js'></script>
+                <link href='https://api.mapbox.com/mapbox.js/v3.1.0/mapbox.css' rel='stylesheet' />
+                <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v1.0.0/leaflet.markercluster.js'></script>
+                <style type="text/css">
+        #map_full { top:0; bottom:0; width:100%; margin-top: -5px;}
+        </style>
 
-				.marker-cluster-medium div {
-				background-image:url(http://a.tiles.mapbox.com/v3/marker/pin-m+CC0001.png)
-				}
+                <style type="text/css">
+                .marker-cluster-small div {
+                background-image:url(https://a.tiles.mapbox.com/v3/marker/pin-s+CC3A00.png);
+                background-repeat:no-repeat;
+                padding-right:10px
+                }
 
-				.marker-cluster-large div {
-				background-image:url(http://a.tiles.mapbox.com/v3/marker/pin-l+CC0001.png)
-				}
+                .marker-cluster-medium div {
+                background-image:url(https://a.tiles.mapbox.com/v3/marker/pin-m+CC0001.png)
+                }
 
-				.leaflet-oldie .marker-cluster-small {
-				background-color:#b5e28c
-				}
+                .marker-cluster-large div {
+                background-image:url(https://a.tiles.mapbox.com/v3/marker/pin-l+CC0001.png)
+                }
 
-				.leaflet-oldie .marker-cluster-small div {
-				background-color:#6ecc39
-				}
+                .leaflet-oldie .marker-cluster-small {
+                background-color:#b5e28c
+                }
 
-				.leaflet-oldie .marker-cluster-medium {
-				background-color:#f1d357
-				}
+                .leaflet-oldie .marker-cluster-small div {
+                background-color:#6ecc39
+                }
 
-				.leaflet-oldie .marker-cluster-medium div {
-				background-color:#f0c20c
-				}
+                .leaflet-oldie .marker-cluster-medium {
+                background-color:#f1d357
+                }
 
-				.leaflet-oldie .marker-cluster-large {
-				background-color:#fd9c73
-				}
+                .leaflet-oldie .marker-cluster-medium div {
+                background-color:#f0c20c
+                }
 
-				.leaflet-oldie .marker-cluster-large div {
-				background-color:#f18017
-				}
+                .leaflet-oldie .marker-cluster-large {
+                background-color:#fd9c73
+                }
 
-				.marker-cluster {
-				background-clip:padding-box;
-				border-radius:20px
-				}
+                .leaflet-oldie .marker-cluster-large div {
+                background-color:#f18017
+                }
 
-				.marker-cluster div {
-				width:30px;
-				height:50px;
-				margin-left:5px;
-				margin-top:5px;
-				text-align:center;
-				color:#fff;
-				font-family:raleway;
-				font-weight:600
-				}
+                .marker-cluster {
+                background-clip:padding-box;
+                border-radius:20px
+                }
 
-				.marker-cluster-medium span {
-				line-height:28px
-				}
+                .marker-cluster div {
+                width:30px;
+                height:50px;
+                margin-left:5px;
+                margin-top:5px;
+                text-align:center;
+                color:#fff;
+                font-family:raleway;
+                font-weight:600
+                }
 
-				.marker-cluster-large span {
-				line-height:37px
-				}
-				
-				.leaflet-popup-content {
-					width: 120px
-				}
-		</style>
-	</koken:head>
+                .marker-cluster-medium span {
+                line-height:28px
+                }
+
+                .marker-cluster-large span {
+                line-height:37px
+                }
+
+                .leaflet-popup-content {
+                   /* width: auto */
+                }
+        </style>
+    </koken:head>
 </koken:load>
 
-<script type="text/javascript">
-$(document).ready(function(){   
-    //Check if the current URL contains '#'
-    if(document.URL.indexOf("#")==-1){
-        // Set the URL to whatever it was plus "#".
-        url = document.URL+"#";
-        location = "#";
-
-        //Reload the page
-        location.reload(true);
-    }
-});
-
-function getParamValue(param,url)
-{
-	var u = url == undefined ? document.location.href : url;
-	var reg = new RegExp('(\\?|&|^)'+param+'=(.*?)(&|$)');
-	matches = u.match(reg);
-	return matches[2] != undefined ? decodeURIComponent(matches[2]).replace(/\+/g,' ').replace('#', '') : '';
-}
-
-</script>
 <div id='map_full'></div>
 
 <script>
+
+// Hack to get the window height to 100%
+function setWindowHeight(){
+    var windowHeight = window.innerHeight;
+    document.getElementById('map_full').style.height = windowHeight-5 + "px";
+}
+window.addEventListener("resize",setWindowHeight,false);
+setWindowHeight();
+
 // Array containing markers datas
 var points = new Array();
 var useablemarkers = new Array();
 var LngA = new Array();
 var LatA = new Array();
+
+L.mapbox.accessToken =  'YOUR MAPBOX TOKEN';
+L.mapbox.config.FORCE_HTTPS = true;
+
+var map = L.mapbox.map('map_full',
+                       'mapbox.dark',
+                        {'minZoom':'2', 'maxZoom':'15'})
+    .setView([47, 8.5], 2); // Points to Zurich.
 
 //function which calculate the median of an array will be used to center the map where you have taken most of your pictures
 function median(values) {
@@ -145,129 +134,88 @@ function median(values) {
         return (values[half-1] + values[half]) / 2.0;
 }
 
-//koken loop to populate markers datas
-<koken:load source="contents">
-    <koken:loop>
-		points.push({
-			cLng:   {{ geolocation.longitude }} +0, // hack to add empty coordinate
-			cLat:   {{ geolocation.latitude }} +0,
-			title:  "{{ content.title }}",
-			url:    "{{ content.url }}",
-			image:  "{{ content.presets.small.url }}"
-		});				
-    </koken:loop>
-</koken:load>
-
-// Mapbox spiders
-L.MarkerClusterGroup.include({
-    _zoomOrSpiderfy: function (e) {
-        var map = this._map;
-        // The following first condition is the part that is missing in the
-        // current plugin release, and which triggers a spiderfy if all
-        // contained markers are still clustered at maximum zoom.
-        if (e.layer._bounds._northEast.equals(e.layer._bounds._southWest)) {
-            if (this.options.spiderfyOnMaxZoom) {
-                e.layer.spiderfy();
-            }
-        } else if (map.getMaxZoom() === map.getZoom()) {
-            if (this.options.spiderfyOnMaxZoom) {
-                e.layer.spiderfy();
-            }
-        } else if (this.options.zoomToBoundsOnClick) {
-            e.layer.zoomToBounds();
-        }
-
-        // Focus the map again for keyboard users.
-        if (e.originalEvent && e.originalEvent.keyCode === 13) {
-            map._container.focus();
-        }
-    }
+var markers = L.markerClusterGroup({
+        // UNCOMMENT to get a custom icon for a group, here, it's the same as child (ie a camera)
+        //(be carefull : not work for group over 100 elements)
+         /* iconCreateFunction: function(cluster) {
+            return L.mapbox.marker.icon({
+            // show the number of markers in the cluster on the icon.
+            'marker-symbol': cluster.getChildCount(),
+            "marker-size": "large",
+            "marker-color": "#CC0001",
+            });
+          }
+        ,*/
+        // custom polygon appearance
+        polygonOptions: {
+            fillColor: '#FF3D3D',
+            color: '#FF3D3D',
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.5
+        },
+        /*  disableClusteringAtZoom : 15, */
+        maxClusterRadius : 50,
+        spiderfyOnMaxZoom : true
 });
 
-// Using clusters
-var markers = L.markerClusterGroup(
-	{
-	// UNCOMMENT to get a custom icon for a group, here, it's the same as child (ie a camera)  
-	//(be carefull : not work for group over 100 elements)
-     /* iconCreateFunction: function(cluster) {
-        return L.mapbox.marker.icon({
-        // show the number of markers in the cluster on the icon.
-		'marker-symbol': cluster.getChildCount(),
-		"marker-size": "large",
-		"marker-color": "#CC0001",		
+
+function create_marker(d) {
+    var title = "<h1>"+d.title+"</h1><a href=\""+d.url+"\"><img src=\""+d.image+"\" /></a>";
+    var marker = L.marker(new L.LatLng(d.cLat,d.cLng), {
+        icon: L.mapbox.marker.icon({
+        "title" : "<div>"+d.title+"<br/> <a href=\""+d.url+"\"><img src=\""+d.image+"\" /></a></div>",
+        "marker-size": "medium",
+        "marker-color": "#CC0001",
+        "marker-symbol": "camera"
+        })
         });
-      }
-    ,*/
-	// custom polygon appearance
-	polygonOptions: {
-        fillColor: '#FF3D3D',
-        color: '#FF3D3D',
-        weight: 2,
-        opacity: 1,
-        fillOpacity: 0.5
-      },
-	 //disableClusteringAtZoom : 10,
-	 maxClusterRadius : 50,
-	 spiderfyOnMaxZoom : true
-	}
-	);
+    marker.bindPopup(title, {
+                     closeButton: false,
+                     minWidth: 500
+    });
+    markers.addLayer(marker);
+}
 
+function prepare_data(data) {
+    var parsed = {};
+    parsed.cLng     = parseFloat(data.cLng);
+    parsed.cLat     = parseFloat(data.cLat);
+    parsed.url      = data.url;     // Lightbox URL
+    parsed.title    = data.title;   // Title
+    parsed.image    = data.image;   // Image url
+    parsed.small    = data.small;   // Small image
+    return parsed;
+}
 
-//loop to populate the median
-for(var idx in points) {
-	// Only for non empty coordinates
-	if((points[idx].cLng != 0) && (points[idx].cLat != 0)) {		
-		LngA.push(points[idx].cLng);
-		LatA.push(points[idx].cLat);
-	}
+function recursive_load(values) {
+    $.each( values.images, function( idx, value ) {
+        var img = prepare_data(value);
+        if ((img.cLat != 0 && img.cLng != 0) && !isNaN(img.cLng) && !isNaN(img.cLat)) {
+            create_marker(img);
+        }
+    });
+    if (!values.hasOwnProperty('next')) {
+        return;
+    }
+    $.getJSON( values.next, function( data ) {
+                recursive_load(data);
+        });
 }
-	
-// Is there coordinates in URL from content.lens 
-if (document.URL.indexOf("qlong")>0)
-{
-	var lat = getParamValue('qlat');
-	var long = getParamValue('qlong');
-	var z = 14;
-}
-else
-{
-	var lat = median(LatA);
-	var long = median(LngA);
-	var z = 3;
-}
-	
-var map = L.mapbox.map('map_full', 'YOUR_MAP', {'minZoom':'3', 'maxZoom':'15'}).setView([median(LatA), median(LngA)], 6);;
-// loop to populate marker in clusters
-for(var idx in points) {
-	// Only for non empty coordinates
-	if((points[idx].cLng != 0) && (points[idx].cLat != 0)) {
-		var title = points[idx].title+"<br/> <img src=\""+points[idx].image+"\" /> <br/> <a href=\""+points[idx].url+"\">See the picture</a>";
-		var marker = L.marker(new L.LatLng(points[idx].cLat,points[idx].cLng), 
-					{ 
-						icon: L.mapbox.marker.icon({
-						"title" : "<div>"+points[idx].title+"<br/> <img src=\""+points[idx].image+"\" /> <br/> <a href=\""+points[idx].url+"\">See the picture</a></div>",
-						"marker-size": "medium",
-						"marker-color": "#CC0001",
-						"marker-symbol": "camera"
-						})
-					});
-		marker.bindPopup(title);
-		markers.addLayer(marker);
-	}
-}
-	
+$.getJSON( '/json/', recursive_load );
+
 map.addLayer(markers);
 
 
-			
-// Fits map to markers, uncomment this block if you prefer to see all your markers on the map, it will unzoom in order to fit all the marker in the map
+
+//// Fits map to markers, uncomment this block if you prefer to see all your markers on the map, it will unzoom in order to fit all the marker in the map
 //map.on('ready', function() {
 //    map.fitBounds(markers.getBounds());
 //});
 
 // Center Maps to marker when click
 markers.on('click', function(e) {
-	map.panTo(e.layer.getLatLng());	
+    map.panTo(e.layer.getLatLng());
 });
-	
+
 </script>
