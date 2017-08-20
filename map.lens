@@ -22,86 +22,82 @@
         </koken:not>
         <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
         <script src='https://api.mapbox.com/mapbox.js/v3.1.0/mapbox.js'></script>
-                <link href='https://api.mapbox.com/mapbox.js/v3.1.0/mapbox.css' rel='stylesheet' />
-                <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v1.0.0/leaflet.markercluster.js'></script>
-                <style type="text/css">
-        #map_full { top:0; bottom:0; width:100%; margin-top: -5px;}
-        </style>
+        <link href='https://api.mapbox.com/mapbox.js/v3.1.0/mapbox.css' rel='stylesheet' />
+		<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v1.0.0/leaflet.markercluster.js'></script>
+		<style type="text/css">
+			#map_full { top:0; bottom:0; width:100%; margin-top: -5px;}
+			.marker-cluster-small div {
+			background-image:url(https://a.tiles.mapbox.com/v3/marker/pin-s+CC3A00.png);
+			background-repeat:no-repeat;
+			padding-right:10px
+			}
 
-                <style type="text/css">
-                .marker-cluster-small div {
-                background-image:url(https://a.tiles.mapbox.com/v3/marker/pin-s+CC3A00.png);
-                background-repeat:no-repeat;
-                padding-right:10px
-                }
+			.marker-cluster-medium div {
+			background-image:url(https://a.tiles.mapbox.com/v3/marker/pin-m+CC0001.png)
+			}
 
-                .marker-cluster-medium div {
-                background-image:url(https://a.tiles.mapbox.com/v3/marker/pin-m+CC0001.png)
-                }
+			.marker-cluster-large div {
+			background-image:url(https://a.tiles.mapbox.com/v3/marker/pin-l+CC0001.png)
+			}
 
-                .marker-cluster-large div {
-                background-image:url(https://a.tiles.mapbox.com/v3/marker/pin-l+CC0001.png)
-                }
+			.leaflet-oldie .marker-cluster-small {
+			background-color:#b5e28c
+			}
 
-                .leaflet-oldie .marker-cluster-small {
-                background-color:#b5e28c
-                }
+			.leaflet-oldie .marker-cluster-small div {
+			background-color:#6ecc39
+			}
 
-                .leaflet-oldie .marker-cluster-small div {
-                background-color:#6ecc39
-                }
+			.leaflet-oldie .marker-cluster-medium {
+			background-color:#f1d357
+			}
 
-                .leaflet-oldie .marker-cluster-medium {
-                background-color:#f1d357
-                }
+			.leaflet-oldie .marker-cluster-medium div {
+			background-color:#f0c20c
+			}
 
-                .leaflet-oldie .marker-cluster-medium div {
-                background-color:#f0c20c
-                }
+			.leaflet-oldie .marker-cluster-large {
+			background-color:#fd9c73
+			}
 
-                .leaflet-oldie .marker-cluster-large {
-                background-color:#fd9c73
-                }
+			.leaflet-oldie .marker-cluster-large div {
+			background-color:#f18017
+			}
 
-                .leaflet-oldie .marker-cluster-large div {
-                background-color:#f18017
-                }
+			.marker-cluster {
+			background-clip:padding-box;
+			border-radius:20px
+			}
 
-                .marker-cluster {
-                background-clip:padding-box;
-                border-radius:20px
-                }
+			.marker-cluster div {
+			width:30px;
+			height:50px;
+			margin-left:5px;
+			margin-top:5px;
+			text-align:center;
+			color:#fff;
+			font-family:raleway;
+			font-weight:600
+			}
 
-                .marker-cluster div {
-                width:30px;
-                height:50px;
-                margin-left:5px;
-                margin-top:5px;
-                text-align:center;
-                color:#fff;
-                font-family:raleway;
-                font-weight:600
-                }
+			.marker-cluster-medium span {
+			line-height:28px
+			}
 
-                .marker-cluster-medium span {
-                line-height:28px
-                }
+			.marker-cluster-large span {
+			line-height:37px
+			}
 
-                .marker-cluster-large span {
-                line-height:37px
-                }
-
-                .leaflet-popup-content {
-                   /* width: auto */
-                }
-        </style>
+			.leaflet-popup-content {
+			   /* width: auto */
+			}
+		</style>
     </koken:head>
 </koken:load>
 
 <div id='map_full'></div>
 
 <script>
-
 // Hack to get the window height to 100%
 function setWindowHeight(){
     var windowHeight = window.innerHeight;
@@ -116,24 +112,24 @@ var useablemarkers = new Array();
 var LngA = new Array();
 var LatA = new Array();
 
-L.mapbox.accessToken =  'YOUR MAPBOX TOKEN';
+L.mapbox.accessToken =  'YOUR_TOKEN';
 L.mapbox.config.FORCE_HTTPS = true;
 
-var map = L.mapbox.map('map_full',
-                       'mapbox.dark',
-                        {'minZoom':'2', 'maxZoom':'15'})
-    .setView([47, 8.5], 2); // Points to Zurich.
-
-//function which calculate the median of an array will be used to center the map where you have taken most of your pictures
-function median(values) {
-    values.sort( function(a,b) {return a - b;} );
-    var half = Math.floor(values.length/2);
-    if(values.length % 2)
-        return values[half];
-    else
-        return (values[half-1] + values[half]) / 2.0;
+//loop to populate the median
+for(var idx in points) {
+	// Only for non empty coordinates
+	if((points[idx].cLng != 0) && (points[idx].cLat != 0)) {		
+		LngA.push(points[idx].cLng);
+		LatA.push(points[idx].cLat);
+	}
 }
 
+var map = L.mapbox.map('map_full',
+                       'YOUR_MAP_ID',
+                        {'minZoom':'3', 'maxZoom':'17'})
+    .setView([47, 8.5], 2);
+
+	
 var markers = L.markerClusterGroup({
         // UNCOMMENT to get a custom icon for a group, here, it's the same as child (ie a camera)
         //(be carefull : not work for group over 100 elements)
@@ -215,7 +211,9 @@ map.addLayer(markers);
 
 // Center Maps to marker when click
 markers.on('click', function(e) {
-    map.panTo(e.layer.getLatLng());
+	var px = map.project(e.popup._latlng);
+    px.y -= e.popup._container.clientHeight/2
+    map.panTo(map.unproject(px),{animate: true});
 });
 
 </script>

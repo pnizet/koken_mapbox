@@ -6,7 +6,7 @@
                 "cLng":   "{{ geolocation.longitude }}+0",
                 "cLat":   "{{ geolocation.latitude }}+0",
                 "title":  "{{ content.title }}",
-                "url":    "{{ content.url }}lightbox/",
+                "url":    "{{ content.url }}",
                 "image":  "{{ content.presets.medium.url }}",
                 "small":  "{{ content.presets.small.url }}"
             }
