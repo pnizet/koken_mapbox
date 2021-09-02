@@ -124,19 +124,16 @@ for(var idx in points) {
 	}
 }
 
-var map = L.mapbox.map('map_full',
-                       'YOUR_MAP_ID',
-                        {'minZoom':'3', 'maxZoom':'17'})
-    .setView([47, 8.5], 2);
+var map = L.mapbox.map('YOUR_MAP_ID')
+			.addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'))
+			.setView([lat, long], z);
 
 	
 var markers = L.markerClusterGroup({
-        // UNCOMMENT to get a custom icon for a group, here, it's the same as child (ie a camera)
-        //(be carefull : not work for group over 100 elements)
          /* iconCreateFunction: function(cluster) {
             return L.mapbox.marker.icon({
             // show the number of markers in the cluster on the icon.
-            'marker-symbol': cluster.getChildCount(),
+            'marker-symbol': (cluster.getChildCount() < 100) ? cluster.getChildCount() : 99,
             "marker-size": "large",
             "marker-color": "#CC0001",
             });
